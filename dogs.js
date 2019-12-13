@@ -1,12 +1,15 @@
 let header = document.querySelector('header')
 let article = document.querySelector('article');
 let dogsMessage;
-let breedNameSaver;
+let breedNameSaver;                                               // saves the name of the breed when clicking on the menu
+// When clicking on the menu then the page should change itself according to menu
 header.addEventListener('click', function(e){
   if(e.target.textContent === "Go Back"){
+    window.location = "";
     header.innerHTML = "";
     getDogsNames();
     getDogPics('https://dog.ceo/api/breeds/image/random/3');
+    breedNameSaver = "";
   }
   else if (e.target.className === 'subBreed') {
     header.innerHTML = "";
@@ -14,7 +17,6 @@ header.addEventListener('click', function(e){
     renderMenu("Go Back")
     getDogPics('https://dog.ceo/api/breed/' + breedNameSaver + '/' + e.target.textContent + '/images/random/3');
   }
-
   else if(e.target.className === ""){
   header.innerHTML = "";
   breedNameSaver = e.target.textContent;
@@ -23,18 +25,46 @@ header.addEventListener('click', function(e){
   getDogPics('https://dog.ceo/api/breed/' + e.target.textContent + '/images/random/3');
 }
 })
+// The page  will change itself according to the fragment identifier
 window.addEventListener('load', function(e){
-  if(window.location.hash !== ''){
-    let removeHash = window.location.hash.split('#')[1]
-       getDogPics('https://dog.ceo/api/breed/' + removeHash + '/images/random/3');
-       getDogBreed(removeHash)
+  getDogsNames();
+  if(window.location.hash !== '' ){
+    let xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', function(){
+      let data = JSON.parse(this.responseText);
+      dogsMessage = data.message;
+      console.log(dogsMessage)
+      if(dogsMessage.hasOwnProperty(window.location.hash.split('#')[1])){
+      let removeHash = window.location.hash.split('#')[1]
+      getDogPics('https://dog.ceo/api/breed/' + removeHash + '/images/random/3');
+      getDogBreed(removeHash)
+    }else{
+      for (var dogs in dogsMessage) {
+          if(dogsMessage[dogs].length !== 0){
+            for (var i = 0; i < dogsMessage[dogs].length; i++) {
+               if(dogsMessage[dogs][i] === window.location.hash.split('#')[1]){
+                 renderMenu("Go Back");
+                 getDogPics('https://dog.ceo/api/breed/' + dogs + '/' + window.location.hash.split('#')[1] + '/images/random/3');
+                 return;
+               }
+            }
+          }
+
+      }
+
+
+
+    }
+
+    })
+    xhr.open('GET', 'https://dog.ceo/api/breeds/list/all');
+    xhr.send();
 
   }else{
-    getDogsNames();
     getDogPics('https://dog.ceo/api/breeds/image/random/3');
   }
 })
-
+// renders the menu. Giving us the option to click on different breeds of dogs or sub breed of dogs
 function renderMenu(name,breed){
   let newTextElement = document.createElement('div');
   newTextElement.style.width = "110px";
@@ -45,11 +75,10 @@ function renderMenu(name,breed){
   newTextElement.textContent = name;
   header.appendChild(newTextElement);
 }
-
+// Gets data from the API where the names of different dog breeds or sub breeds are acquired
 function getDogsNames(){
 let xhr = new XMLHttpRequest();
 xhr.addEventListener('load', function(e){
-  e.stopPropagation();
   if(this.status === 200){
   let dogs = JSON.parse(this.responseText);
   dogsMessage = dogs.message;
@@ -64,7 +93,7 @@ xhr.addEventListener('load', function(e){
 xhr.open('GET', 'https://dog.ceo/api/breeds/list/all');
 xhr.send();
 }
-
+//Gets images of different dog breeds or sub breeds from the API
  function getDogPics(breedName){
    article.innerHTML = "";
    let xhr = new XMLHttpRequest();
@@ -100,9 +129,11 @@ xhr.send();
    xhr.open('GET', breedName);
    xhr.send();
  }
-
+// renders the menu for sub breed dogs and give them the className "SubBreed". If the breed of dogs
+//has no sub breed then only the menu "Go Back will be rendered" 
 function getDogBreed(nameOfDog){
   header.innerHTML ="";
+  console.log(dogsMessage);
   if(dogsMessage[nameOfDog].length !== 0){
     renderMenu("Go Back");
     for (dog of dogsMessage[nameOfDog]) {
