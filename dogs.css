@@ -1,0 +1,27 @@
+
+body{
+  width: 100%;
+  margin: 0;
+
+}
+header{
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 50px;
+  background-color: darkgreen;
+
+}
+article{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+div:hover{
+  background-color: lightgreen;
+}
+div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
