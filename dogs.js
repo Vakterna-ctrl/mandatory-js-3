@@ -13,7 +13,7 @@ header.addEventListener('click', function(e){
   }
   else if (e.target.className === 'subBreed') {
     header.innerHTML = "";
-    window.location.hash = e.target.textContent;
+    window.location.hash = breedNameSaver + '/' + e.target.textContent;
     renderMenu("Go Back")
     getDogPics('https://dog.ceo/api/breed/' + breedNameSaver + '/' + e.target.textContent + '/images/random/3');
   }
@@ -38,22 +38,6 @@ window.addEventListener('load', function(e){
       let removeHash = window.location.hash.split('#')[1]
       getDogPics('https://dog.ceo/api/breed/' + removeHash + '/images/random/3');
       getDogBreed(removeHash)
-    }else{
-      for (var dogs in dogsMessage) {
-          if(dogsMessage[dogs].length !== 0){
-            for (var i = 0; i < dogsMessage[dogs].length; i++) {
-               if(dogsMessage[dogs][i] === window.location.hash.split('#')[1]){
-                 renderMenu("Go Back");
-                 getDogPics('https://dog.ceo/api/breed/' + dogs + '/' + window.location.hash.split('#')[1] + '/images/random/3');
-                 return;
-               }
-            }
-          }
-
-      }
-
-
-
     }
 
     })
@@ -130,7 +114,7 @@ xhr.send();
    xhr.send();
  }
 // renders the menu for sub breed dogs and give them the className "SubBreed". If the breed of dogs
-//has no sub breed then only the menu "Go Back will be rendered" 
+//has no sub breed then only the menu "Go Back will be rendered"
 function getDogBreed(nameOfDog){
   header.innerHTML ="";
   console.log(dogsMessage);
