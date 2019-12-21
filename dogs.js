@@ -13,14 +13,14 @@ header.addEventListener('click', function(e){
   }
   else if (e.target.className === 'subBreed') {
     header.innerHTML = "";
-    window.location.hash = breedNameSaver + '/' + e.target.textContent;
+    window.location = '#' + breedNameSaver + '/' + e.target.textContent;
     renderMenu("Go Back")
     getDogPics('https://dog.ceo/api/breed/' + breedNameSaver + '/' + e.target.textContent + '/images/random/3');
   }
   else if(e.target.className === ""){
   header.innerHTML = "";
   breedNameSaver = e.target.textContent;
-  window.location.hash = e.target.textContent;
+  window.location = '#' + e.target.textContent;
   getDogBreed(e.target.textContent)
   getDogPics('https://dog.ceo/api/breed/' + e.target.textContent + '/images/random/3');
 }
@@ -33,8 +33,14 @@ window.addEventListener('load', function(e){
     xhr.addEventListener('load', function(){
       let data = JSON.parse(this.responseText);
       dogsMessage = data.message;
-      console.log(dogsMessage)
-      if(dogsMessage.hasOwnProperty(window.location.hash.split('#')[1])){
+      console.log(window.location.hash.split('#')[1].split('/'))
+      if(window.location.hash.split('#')[1].split('/').length === 2){           //if fragment identifier has breed/subBreed
+      header.innerHTML = "";
+      let removeHash = window.location.hash.split('#')[1]
+      getDogPics('https://dog.ceo/api/breed/' + removeHash + '/images/random/3');
+      renderMenu("Go Back")
+    }else if(window.location.hash.split('#')[1].split('/').length === 1){          //if fragment identifier only has breed
+      header.innerHTML = "";
       let removeHash = window.location.hash.split('#')[1]
       getDogPics('https://dog.ceo/api/breed/' + removeHash + '/images/random/3');
       getDogBreed(removeHash)
